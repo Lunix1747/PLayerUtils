@@ -41,3 +41,5 @@ if character then
 		humanoid.Died:Connect(onCharacterDied)
 	end
 end
+
+print("Loaded")
