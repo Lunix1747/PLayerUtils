@@ -1,0 +1,58 @@
+-- Define variables
+local plr = game:GetService("Players").LocalPlayer
+local char = plr.Character
+local UIS = game:GetService("UserInputService")
+local button = script.Parent
+
+HasFireTouch = false
+unloaded = false
+SavedAdmins = {}
+firetouchinterest = firetouchinterest
+firetouch = firetouchinterest
+oldprint = print
+IsBringing = false
+loopkilling = {}
+
+do
+	--Tables
+	States = {
+		Antibring = true,
+	}
+	Reload_Guns = {}
+	Whitelisted = {}
+	Parts = {}
+	Temp = {}
+	Whitelisted_ITEMS = {}
+end
+
+-- Modified to run on button
+local function activateAntiBring()
+	char = plr.Character
+	if States.Antibring then
+		char.ChildAdded:Connect(function(a)
+			if unloaded or not a then return end
+			if a:IsA("Tool") and not table.find(Whitelisted_ITEMS, a) and not a:FindFirstChild("ISWHITELISTED") then
+				plr.Character:FindFirstChild("HumanoidRootPart").Anchored = true
+				a:Destroy()
+				task.spawn(function()
+					repeat
+						game:GetService("RunService").Stepped:Wait()
+						a:Destroy()
+					until not a or a and a.Parent == nil
+				end)
+				task.spawn(function()
+					task.wait()
+					plr.Character:FindFirstChild("HumanoidRootPart").Anchored = false
+					pcall(function()
+						game:GetService("Debris"):AddItem(a, 0)
+						print("Anti-bring was Successful")
+					end)
+				end)
+			end
+		end)
+	end
+end
+
+button.MouseButton1Click:Connect(activateAntiBring)
+plr.CharacterAdded:Connect(activateAntiBring) -- Ensures it runs after respawn
+
