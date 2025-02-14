@@ -1,0 +1,43 @@
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+local player = Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local lastDeathPosition = nil
+
+-- Function to track death position
+local function onCharacterDied()
+	local rootPart = character:FindFirstChild("HumanoidRootPart")
+	if rootPart then
+		lastDeathPosition = rootPart.Position
+	end
+end
+
+-- Function to handle respawn
+local function onCharacterAdded(newCharacter)
+	character = newCharacter
+	local humanoid = character:FindFirstChildOfClass("Humanoid")
+
+	if humanoid then
+		humanoid.Died:Connect(onCharacterDied)
+	end
+
+	-- Teleport back to death position if valid
+	if lastDeathPosition then
+		local rootPart = character:WaitForChild("HumanoidRootPart", 5)
+		if rootPart then
+			rootPart.CFrame = CFrame.new(lastDeathPosition)
+		end
+	end
+end
+
+-- Listen for character changes
+player.CharacterAdded:Connect(onCharacterAdded)
+
+-- Handle first spawn
+if character then
+	local humanoid = character:FindFirstChildOfClass("Humanoid")
+	if humanoid then
+		humanoid.Died:Connect(onCharacterDied)
+	end
+end
