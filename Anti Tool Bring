@@ -54,5 +54,6 @@ local function activateAntiBring()
 end
 
 button.MouseButton1Click:Connect(activateAntiBring)
-plr.CharacterAdded:Connect(activateAntiBring) -- Ensures it runs after respawn
+plr.CharacterAdded:Connect(activateAntiBring) -- lol
 
+print("Loaded")
